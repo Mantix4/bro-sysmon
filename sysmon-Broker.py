@@ -457,44 +457,48 @@ _event_map = {
 
 def main(c, file_in):
     with open(file_in, 'r') as f:
-#     for line in f:
-      while 1:
-	where = f.tell()
-	line = f.readline()
-	if not line:
-	    time.sleep(1)
-	    f.seek(where)
-	else:
-            try:
-                winevt = json.loads(line)
-            except JSONDecodeError:
-  		print("JSON Decode Error")
-                continue
+        #     for line in f:
+        while 1:
+            where = f.tell()
+            line = f.readline()
+            if not line:
+                time.sleep(1)
+                f.seek(where)
+            else:
+                #print('got data: ', line,)
+                try:
+                    winevt = json.loads(line)
+                except:
+                    print("JSON Decode Error")
+                    continue
 
-	    if winevt['event_id'] == 19:
-		print winevt
-	    if str(winevt.get('log_name')) == 'Microsoft-Windows-Sysmon/Operational':
-	        myLogName = 'Sysmon'
-	    else:
-		myLogName = winevt['log_name']
+                winevt['event_id'] = winevt['winlog']['event_id']
+                winevt['log_name'] = winevt['winlog']['channel']
 
-            # this is a bit complicated, so to break it down:
-            # 1. Look in _event_map for a log name to map events to a func
-            #  if it doesn't match, return a dict so that nothing is wrong
-            #  in the following call where:
-            # 2. An event is then mapped with event_id using one of the 
-            #  specific event log maps. If one doesn't match, then the 
-            #  generic event handler is used.
-            build_message = _event_map.get(str(winevt.get('log_name')), 
-                dict()).get(winevt.get('event_id'), generic_event)
-            # use the matched event handler and publish it to the winevt
-            # broker topic
-            msg = build_message(winevt)
-            # if they error, the event handlers return None
-            if msg:
-                c.publish('/sysmon', msg)
-		continue
+                if winevt['event_id'] == 19:
+                    print(winevt)
+                if str(winevt.get('log_name')) == 'Microsoft-Windows-Sysmon/Operational':
+                    myLogName = 'Sysmon'
+                else:
+                    myLogName = winevt['log_name']
 
+                # this is a bit complicated, so to break it down:
+                # 1. Look in _event_map for a log name to map events to a func
+                #  if it doesn't match, return a dict so that nothing is wrong
+                #  in the following call where:
+                # 2. An event is then mapped with event_id using one of the
+                #  specific event log maps. If one doesn't match, then the
+                #  generic event handler is used.
+                build_message = _event_map.get(str(winevt.get('log_name')),
+                                               dict()).get(winevt.get('event_id'), generic_event)
+                # use the matched event handler and publish it to the winevt
+                # broker topic
+                msg = build_message(winevt)
+                # if they error, the event handlers return None
+                if msg:
+                    print('PUBLISH ', winevt['log_name'], winevt['event_id'], build_message, msg)
+                    c.publish('/sysmon', msg)
+                    continue
 if __name__ == '__main__':
     p = ArgumentParser(description=_DESCRIPTION)
     p.add_argument('broker_peer',

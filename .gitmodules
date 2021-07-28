@@ -1,0 +1,18 @@
+[submodule "SysmonAnalyzer"]
+	path = SysmonAnalyzer
+	url = git@github.com:Mantix4/SysmonAnalyzer.git
+[submodule "broker"]
+	path = broker
+	url = https://github.com/bro/broker
+[submodule "broker/cmake"]
+	path = broker/cmake
+	url = https://github.com/zeek/cmake
+[submodule "broker/bindings/python/3rdparty/pybind11"]
+	path = broker/bindings/python/3rdparty/pybind11
+	url = https://github.com/pybind/pybind11.git
+[submodule "broker/3rdparty"]
+	path = broker/3rdparty
+	url = https://github.com/zeek/zeek-3rdparty
+[submodule "brokercaf"]
+	path = broker/caf
+	url = https://github.com/zeek/actor-framework.git

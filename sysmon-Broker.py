@@ -455,6 +455,10 @@ _event_map = {
     "Microsoft-Windows-Sysmon/Operational": _sysmon_event_map
 }
 
+
+from sysmon_analyzer.sysmon_analyzer import SysmonAnalyzer
+analyzer = SysmonAnalyzer()
+
 def main(c, file_in):
     with open(file_in, 'r') as f:
         #     for line in f:
@@ -471,6 +475,26 @@ def main(c, file_in):
                 except:
                     print("JSON Decode Error")
                     continue
+
+                for alert in analyzer.read(winevt):
+                    print('ALERT %s (%s)'%(alert['mitre_name'], alert['mitre_info']))
+                    msg = broker.bro.Event('ueba_alert',
+                        alert['hostname'],
+                        alert['ipv4'],
+                        alert['mac'],
+                        alert['os_name'],
+                        alert['os_version'],
+                        alert['os_build'],
+                        alert['platform'],
+                        alert['mitre_name'],
+                        alert['mitre_info'],
+                        alert['mitre_tech'],
+                        alert['mitre_subtech'],
+                        alert['mitre_tactic'],
+                        json.dumps(alert['events'], default=str),
+                    )
+
+                    c.publish('/sysmon', msg)
 
                 winevt['event_id'] = winevt['winlog']['event_id']
                 winevt['log_name'] = winevt['winlog']['channel']

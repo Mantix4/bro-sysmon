@@ -48,31 +48,32 @@ def object_sacl_changed(winevt):
 
 
 def process_creation(winevt):
-    evt_data = winevt['event_data']
+    winlog = winevt['winlog']
+    evt_data = winlog['event_data']
     try:
         message = broker.bro.Event(
-	    'process_created',
-	    winevt.get('computer_name').encode('ascii','ignore'),
-	    evt_data.get('ProcessId','ProcessID not provided').encode('ascii','ignore'),
-	    evt_data.get('CommandLine','CommandLine not provided').encode('ascii','ignore'),
-	    evt_data.get('Company','Company not provided').encode('ascii','ignore'),
-	    evt_data.get('CurrentDirectory','CurrentDirectory not provided').encode('ascii','ignore'),
-	    evt_data.get('Description','Description not provided').encode('ascii','ignore'),
-	    evt_data.get('FileVersion','FileVersion not provided').encode('ascii','ignore'),
-	    evt_data.get('Hashes','Hashes not provided').encode('ascii','ignore'),
-	    evt_data.get('Image','Image not provided').encode('ascii','ignore'),
-	    evt_data.get('IntegrityLevel','IntegrityLevel not provided').encode('ascii','ignore'),
-	    evt_data.get('LogonGuid','LogonGuid not provided').encode('ascii','ignore'),
-	    evt_data.get('LogonId','LogonId not provided').encode('ascii','ignore'),
-	    evt_data.get('ParentCommandLine','ParentCommandLine not provided').encode('ascii','ignore'),
-	    evt_data.get('ParentImage','ParentImage not provided').encode('ascii','ignore'),
-	    evt_data.get('ParentProcessGuid','ParentProcessGuid not provided').encode('ascii','ignore'),
-	    evt_data.get('ParentProcessId','ParentProcessId not provided').encode('ascii','ignore'),
-	    evt_data.get('ProcessGuid','ProcessGuid not provided').encode('ascii','ignore'),
-	    evt_data.get('Product','Product not provided').encode('ascii','ignore'),
-	    evt_data.get('TerminalSessionId','TerminalSessionId not provided').encode('ascii','ignore'),
-	    evt_data.get('User','User not provided').encode('ascii','ignore'),
-	    evt_data.get('UtcTime','UtcTime not provided').encode('ascii','ignore'),
+            'process_created',
+            winevt.get('computer_name'),
+            evt_data.get('ProcessId', 'ProcessID not provided'),
+            evt_data.get('CommandLine', 'CommandLine not provided'),
+            evt_data.get('Company', 'Company not provided'),
+            evt_data.get('CurrentDirectory', 'CurrentDirectory not provided'),
+            evt_data.get('Description', 'Description not provided'),
+            evt_data.get('FileVersion', 'FileVersion not provided'),
+            evt_data.get('Hashes', 'Hashes not provided'),
+            evt_data.get('Image', 'Image not provided'),
+            evt_data.get('IntegrityLevel', 'IntegrityLevel not provided'),
+            evt_data.get('LogonGuid', 'LogonGuid not provided'),
+            evt_data.get('LogonId', 'LogonId not provided'),
+            evt_data.get('ParentCommandLine', 'ParentCommandLine not provided'),
+            evt_data.get('ParentImage', 'ParentImage not provided'),
+            evt_data.get('ParentProcessGuid', 'ParentProcessGuid not provided'),
+            evt_data.get('ParentProcessId', 'ParentProcessId not provided'),
+            evt_data.get('ProcessGuid', 'ProcessGuid not provided'),
+            evt_data.get('Product', 'Product not provided'),
+            evt_data.get('TerminalSessionId', 'TerminalSessionId not provided'),
+            evt_data.get('User', 'User not provided'),
+            evt_data.get('UtcTime', 'UtcTime not provided'),
         )
     except Exception as e:
         #print e;

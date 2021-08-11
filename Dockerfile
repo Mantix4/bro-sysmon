@@ -11,7 +11,7 @@ WORKDIR /app/broker
 RUN ./configure && make && make install
 
 COPY . /app
-COPY SysmonAnalyzer/sysmon_analyzer /app
+ADD SysmonAnalyzer/sysmon_analyzer /app/sysmon_analyzer/
 WORKDIR /app
 ENTRYPOINT [ "python3", "-u", "/app/sysmon-Broker.py" ]
 CMD ["-h"]
